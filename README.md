@@ -1,8 +1,14 @@
 # 🚍 Jihlava MHD (DPMJ) — Unofficial Live Transit API Documentation
 
+> [!WARNING]
+> **⚠️ RATE LIMIT & FAIR USE DISCLAIMER — DO NOT POLL FASTER THAN EVERY 15 SECONDS!**
+> This API is an undocumented production endpoint operated by **Statutární město Jihlava** and **DPMJ** for the public transit map. The official web client refreshes vehicle positions every **12 seconds** (`refreshInterval: 0.2` min). 
+> **Do not configure your scripts, bots, or Home Assistant integrations to query this API faster than once every 15 seconds.** Aggressive polling will overload the municipal GIS server and result in your IP address being rate-limited or permanently blocked by the city's firewall.
+
 > **Unofficial documentation** for the real-time public transit (MHD) tracking API operated by **Statutární město Jihlava** and **Dopravní podnik města Jihlavy (DPMJ)**.
 
 ![Status](https://img.shields.io/badge/API_Status-Active-brightgreen)
+![Rate Limit](https://img.shields.io/badge/Min_Poll_Interval-15_Seconds-critical)
 ![Protocol](https://img.shields.io/badge/Backend-ArcGIS_REST_10.91-blue)
 ![Format](https://img.shields.io/badge/Format-JSON_%7C_GeoJSON_%7C_PBF-orange)
 ![Auth](https://img.shields.io/badge/Auth-None_(Public)-success)
@@ -51,7 +57,54 @@ The `Ji_MHD_aktualni` MapServer is divided into several numbered sub-layers. Som
 | **`45`** | `poloha čekajícího vánočního vozu`| Point | ❌ No | Special thematic tracker: Waiting Christmas vehicle. |
 | **`49`** | `poloha vozů s výkresy ZŠ` | Point | ❌ No | Special thematic tracker: Buses with elementary school drawings. |
 | **`52`** | `DO Jihlavy` | Point | ✅ Yes | Special thematic tracker: "DO Jihlavy" promotional vehicle. |
-| **`1017`**| `seznam linek MHD` | Table | — | Master table of MHD lines. |
+| **`1017`**| `seznam linek MHD` | Table | — | **Master table of MHD lines**. |
+
+---
+
+## 🕒 Master Timetable & Line Directory (DPMJ Network)
+
+All Jihlava MHD lines are integrated into the **Veřejná doprava Vysočiny (VDV)** system and use national CIS license numbers in the **`765xxx`** range.
+* **Daily Operating Hours:** Approximately **04:30 – 23:30** (varies by line).
+* **Boarding Rules:** All-door boarding (*nástup všemi dveřmi*) is active during daytime hours. From **21:00 to 04:00**, passengers must board via the front door only (marked as `"N"` in timetables).
+* **Query the Master Line Table (`1017`) via API:**
+  ```http
+  GET https://gis.jihlava-city.cz/server1/rest/services/verejnost/Ji_MHD_aktualni/MapServer/1017/query?where=1%3D1&outFields=*&f=json
+  ```
+
+### 1. Trolleybus Lines (`typ: "trolejbus"`)
+Jihlava is unique in the Czech Republic for designating surface trolleybus lines with **letters (`A`–`H`)**. In the API, trolleybus `lineid` values follow the **`20x`** series (e.g., `E` = `205`), while national CIS timetables use `76510x`.
+
+| Line (`linka`) | API `lineid` | CIS ID | Primary Route & Terminals | Peak Interval (Workdays) | Off-Peak / Weekend Interval | Operating Notes |
+| :---: | :---: | :---: | :--- | :---: | :---: | :--- |
+| **`A`** | `201` | `765101` | **Dopravní podnik** ↔ Masarykovo nám. ↔ Gorkého ↔ **Hlavní nádraží** | 12–15 min | 20–30 min | Core north-south rail station link. |
+| **`B`** | `202` | `765102` | **Hlavní nádraží** ↔ Březinova ↔ Masarykovo nám. ↔ VŠP ↔ 17. listopadu ↔ S. K. Neumanna ↔ **Na Dolech** *(↔ Motorpal, hala)* | 10–15 min | 20–30 min | Backbone line serving Březinky housing estate; selected runs extend to Motorpal via battery trolleybus. |
+| **`C`** | `203` | `765104` | **Městské nádraží** ↔ Kaufland ↔ Březinova ↔ Masarykovo nám. ↔ VŠP ↔ U aut. nádraží ↔ S. K. Neumanna ↔ **Horní Kosov** | 12–15 min | 20–30 min | Connects Horní Kosov estate with the centre, Březinky, and Městské nádraží. |
+| **`D`** | `204` | `765105` | **Hlavní nádraží** ↔ Březinova ↔ Masarykovo nám. ↔ VŠP ↔ Ke Skalce ↔ Žižkova ↔ **Poliklinika** *(Dopravní podnik)* | 15–30 min | 30 min | Connects Hlavní nádraží and Březinky with the hospital/Poliklinika zone. |
+| **`E`** | `205` | `765107` | **V Ráji** *(Dopravní podnik)* ↔ Masarykovo nám. ↔ Kaufland ↔ Romana Havelky ↔ **Motorpal, hala** *(Chlumova)* | 15–20 min | 30 min | Connects the southern/eastern districts with the northern industrial zone. |
+| **`F`** | `206` | `765108` | **Dopravní podnik** ↔ Masarykovo nám. ↔ VŠP ↔ 17. listopadu ↔ Zátopkova ↔ **Purmerendská** *(Poliklinika)* | 15–20 min | 30 min | Connects the southern depot corridor with the western health/residential zone. |
+| **`G`** | `207` | `765109` | **Horní Kosov** ↔ Žižkova ↔ Masarykovo nám. ↔ Kaufland ↔ Na Růžku ↔ **Zadní Bedřichov** *(↔ Bosch Pávov ↔ Antonínův Důl)* | 15–20 min | 30–60 min | Opened via the southern Bedřichov trolleybus corridor; partial battery extensions to Pávov industrial zone. |
+| **`H`** | `208` | `765110` | **(Bosch Pávov ↔) Zadní Bedřichov** ↔ Kaufland ↔ VŠP ↔ 17. listopadu ↔ Poliklinika ↔ Žižkova ↔ VŠP ↔ **Zadní Bedřichov** | 20–30 min | 30–60 min | Semi-circular line bypassing Masarykovo náměstí via VŠP and Poliklinika. |
+| **`T`** | `209` | `765111` | **Dopravní podnik** ↔ Tylova ↔ Brtnická ↔ *Technické / zátahové spoje* | Irregular | Irregular | Depot pull-in / pull-out and special technical runs. |
+
+---
+
+### 2. Bus Lines (`typ: "autobus"`)
+Bus lines are designated by **numbers** and serve suburban districts, villages, shopping centres, and industrial shift changes. In the API, bus `lineid` values follow the **`1xx`** series (`100 + line_number`, e.g., Line `31` = `131`).
+
+| Line (`linka`) | API `lineid` | Primary Route & Terminals | Schedule Profile & Typical Frequency |
+| :---: | :---: | :--- | :--- |
+| **`2`** | `102` | **Velký Beranov** ↔ Malý Beranov ↔ Helenín ↔ Masarykovo nám. ↔ Královský vršek ↔ Smrčenská ↔ Krematorium ↔ **Zborná / Smrčná** | **Regular suburban/city line:** Every 30–60 min on workdays; 60–120 min on weekends (Smrčná served by selected runs Mon/Wed/Fri). |
+| **`4`** | `104` | **V Ráji** ↔ Masarykovo nám. ↔ Polenská / Hlavní nádraží ↔ Hruškové Dvory ↔ Moravské kovárny ↔ **Henčov / Heroltice** | **Industrial & suburban line:** Every 30–60 min during peaks; coordinated with industrial shift times. |
+| **`7`** | `107` | **Masarykovo náměstí** ↔ Pístov ↔ Vysoká ↔ **Popice** | **Suburban village line:** Fixed timetable departures (approx. 6–10 pairs of runs daily). |
+| **`8`** | `108` | **Masarykovo náměstí** ↔ Autobusové nádraží ↔ Škola Rošického ↔ Škola Jarní ↔ Motorpal ↔ **Hybrálec** | **Suburban line:** Every 30–60 min during peaks; hourly/bi-hourly off-peak. |
+| **`9`** | `109` | **Masarykovo náměstí** ↔ Žižkova ↔ **NC Aventin** *(Shopping Jihlava)* | **Free shopping centre line (*doprava zdarma*):** Runs daily every 30–60 min during shopping centre hours. |
+| **`10`** | `110` | **Masarykovo náměstí** ↔ **Kosov** | **Suburban line:** Selected scheduled departures throughout the day. |
+| **`12`** | `112` | **Velký Beranov** ↔ Helenín ↔ Masarykovo nám. ↔ Královský vršek ↔ Bedřichov ↔ Pávov ↔ Antonínův Důl ↔ **Štoky** | **Regional/suburban backbone:** Every 30–60 min on workdays; 60–120 min on weekends. |
+| **`31`** | `131` | **Dopravní podnik** ↔ Masarykovo nám. ↔ S. K. Neumanna ↔ **Bosch Diesel (Bosch Pávov)** | **Industrial shift line:** High-capacity runs timed around 06:00, 14:00, and 22:00 shift changes at Bosch. |
+| **`32`** | `132` | **Dopravní podnik** ↔ Březinova ↔ **Bosch Diesel (Bosch Pávov)** | **Industrial shift line:** Express shift connections via Březinky for Bosch employees. |
+| **`41`** | `141` | **Dopravní podnik** ↔ S. K. Neumanna ↔ **Swoboda-Stamping** ↔ Dopravní podnik | **Industrial shift line:** Timed specifically for shift changes at Swoboda-Stamping. |
+| **`42`** | `142` | **Dopravní podnik** ↔ Březinova ↔ **Swoboda-Stamping** ↔ Dopravní podnik | **Industrial shift line:** Timed specifically for shift changes via Březinky. |
+| **`Š1` / `Š2`**| — | **Škola Rošického ↔ Škola Jarní** (`Š1`) / **Masarykovo nám. ↔ Škola Jungmannova** (`Š2`) | **School lines (*školní spoje*):** Morning runs on school days only. |
 
 ---
 
@@ -93,6 +146,7 @@ Because this is an ArcGIS REST server, the `where` parameter accepts standard **
 | **Only Buses** | `typ='autobus'` | `where=typ%3D%27autobus%27` |
 | **Vehicles delayed > 3 mins** | `delayinmins>3` | `where=delayinmins%3E3` |
 | **Specific Fleet Number (#12)**| `carnum=12` | `where=carnum%3D12` |
+| **Specific Internal Line ID** | `lineid=205` | `where=lineid%3D205` |
 
 ---
 
@@ -100,7 +154,7 @@ Because this is an ArcGIS REST server, the `where` parameter accepts standard **
 
 ### Vehicle Attributes (Layers `47`, `50`, `2`, `51`)
 
- note: The API exposes extra internal telemetry (`carnum`, `speed`, `azimut`, `routeid`) that is not shown to users on the public web map popups.
+> **Note:** The API exposes extra internal telemetry (`carnum`, `speed`, `azimut`, `routeid`) that is not shown to users on the public web map popups.
 
 | Field Name | Data Type | Example | Description |
 | :--- | :--- | :--- | :--- |
@@ -172,8 +226,9 @@ curl -s "https://gis.jihlava-city.cz/server1/rest/services/verejnost/Ji_MHD_aktu
 ```
 
 ### 2. Python (`requests`)
-Fetch both moving and waiting vehicles with clean browser headers:
+Fetch both moving and waiting vehicles with clean browser headers (respecting the **15+ second** polling limit):
 ```python
+import time
 import requests
 
 BASE_URL = "https://gis.jihlava-city.cz/server1/rest/services/verejnost/Ji_MHD_aktualni/MapServer"
@@ -181,6 +236,7 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) JihlavaMHDClient/1.0",
     "Referer": "https://sgis.jihlava-city.cz/web/mhd/"
 }
+MIN_POLL_SECONDS = 15  # Never poll faster than 15 seconds!
 
 def get_vehicles(layer_id=47, line=None):
     where_clause = f"linka='{line}'" if line else "1=1"
@@ -221,7 +277,7 @@ fetchJihlavaBuses();
 ```
 
 ### 4. Home Assistant (`configuration.yaml`)
-Track the count of active vehicles on a specific line (e.g., Line `E`) and expose vehicle details as attributes:
+Track the count of active vehicles on a specific line (e.g., Line `E`) with a safe `scan_interval: 15`:
 ```yaml
 rest:
   - resource: "https://gis.jihlava-city.cz/server1/rest/services/verejnost/Ji_MHD_aktualni/MapServer/47/query?where=linka%3D'E'&outFields=*&returnGeometry=false&f=json"
@@ -247,7 +303,7 @@ rest:
 
 ## ⚠️ Best Practices & Rate Limits
 
-1. **Respect the Polling Interval:** The official web map refreshes every **12 seconds** (`refreshInterval: 0.2` min). Do not poll the server faster than once every **12–15 seconds**, or the city's firewall may rate-limit or block your IP.
+1. **Never Poll Faster Than 15 Seconds:** The official web map refreshes every **12 seconds** (`refreshInterval: 0.2` min). Always keep your polling interval at **15 seconds or higher** so the city's firewall does not rate-limit or ban your IP.
 2. **Include a `Referer` Header:** While direct requests currently work without authentication, the ArcGIS portal config explicitly lists `authorizedCrossOriginDomains: ["https://sgis.jihlava-city.cz", "tmapserver.cz", "https://dopravaapi.jihlava-city.cz/", "github.io"]`. If making browser-side XHR requests or automated backend calls, include `Referer: https://sgis.jihlava-city.cz/web/mhd/` (or host your frontend on GitHub Pages `github.io`, which is whitelisted for CORS!).
 3. **Avoid `resultRecordCount` in Production:** When testing, adding `resultRecordCount=2` limits the response and triggers `"exceededTransferLimit": true`. Omit `resultRecordCount` in production to receive all active vehicles (the server allows up to `maxRecordCount: 2000` per request).
 
