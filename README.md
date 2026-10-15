@@ -1,9 +1,13 @@
 # 🚍 Jihlava MHD (DPMJ) — Unofficial Live Transit API Documentation
 
-> [!CAUTION]
+> [!WARNING]
 > **⚠️ RATE LIMIT & FAIR USE DISCLAIMER — DO NOT POLL FASTER THAN EVERY 15 SECONDS!**
 > This API is an undocumented production endpoint operated by **Statutární město Jihlava** and **DPMJ** for the public transit map. The official web client refreshes vehicle positions every **12 seconds** (`refreshInterval: 0.2` min). 
-> **Do not configure your scripts, bots, or Home Assistant integrations to query this API faster than once every 15 seconds.** Aggressive polling will overload the municipal GIS server and result in your IP address being rate-limited or permanently blocked by the city's firewall.
+> **Do not configure your scripts, bots, or Home Assistant integrations to query this API faster than once every 15 seconds.**
+
+> [!CAUTION]
+> **❗ If you're gonna spam the API you may and probably will WILL GET IP BANNED
+> Aggressive polling will overload the municipal GIS server and result in your IP address being rate-limited or permanently blocked by the city's firewall
 
 > **Unofficial documentation** for the real-time public transit (MHD) tracking API operated by **Statutární město Jihlava** and **Dopravní podnik města Jihlavy (DPMJ)**.
 
