@@ -71,43 +71,6 @@ All Jihlava MHD lines are integrated into the **Veřejná doprava Vysočiny (VDV
   GET https://gis.jihlava-city.cz/server1/rest/services/verejnost/Ji_MHD_aktualni/MapServer/1017/query?where=1%3D1&outFields=*&f=json
   ```
 
-### 1. Trolleybus Lines (`typ: "trolejbus"`)
-Jihlava is unique in the Czech Republic for designating surface trolleybus lines with **letters (`A`–`H`)**. In the API, trolleybus `lineid` values follow the **`20x`** series (e.g., `E` = `205`), while national CIS timetables use `76510x`.
-
-| Line (`linka`) | API `lineid` | CIS ID | Primary Route & Terminals | Peak Interval (Workdays) | Off-Peak / Weekend Interval | Operating Notes |
-| :---: | :---: | :---: | :--- | :---: | :---: | :--- |
-| **`A`** | `201` | `765101` | **Dopravní podnik** ↔ Masarykovo nám. ↔ Gorkého ↔ **Hlavní nádraží** | 12–15 min | 20–30 min | Core north-south rail station link. |
-| **`B`** | `202` | `765102` | **Hlavní nádraží** ↔ Březinova ↔ Masarykovo nám. ↔ VŠP ↔ 17. listopadu ↔ S. K. Neumanna ↔ **Na Dolech** *(↔ Motorpal, hala)* | 10–15 min | 20–30 min | Backbone line serving Březinky housing estate; selected runs extend to Motorpal via battery trolleybus. |
-| **`C`** | `203` | `765104` | **Městské nádraží** ↔ Kaufland ↔ Březinova ↔ Masarykovo nám. ↔ VŠP ↔ U aut. nádraží ↔ S. K. Neumanna ↔ **Horní Kosov** | 12–15 min | 20–30 min | Connects Horní Kosov estate with the centre, Březinky, and Městské nádraží. |
-| **`D`** | `204` | `765105` | **Hlavní nádraží** ↔ Březinova ↔ Masarykovo nám. ↔ VŠP ↔ Ke Skalce ↔ Žižkova ↔ **Poliklinika** *(Dopravní podnik)* | 15–30 min | 30 min | Connects Hlavní nádraží and Březinky with the hospital/Poliklinika zone. |
-| **`E`** | `205` | `765107` | **V Ráji** *(Dopravní podnik)* ↔ Masarykovo nám. ↔ Kaufland ↔ Romana Havelky ↔ **Motorpal, hala** *(Chlumova)* | 15–20 min | 30 min | Connects the southern/eastern districts with the northern industrial zone. |
-| **`F`** | `206` | `765108` | **Dopravní podnik** ↔ Masarykovo nám. ↔ VŠP ↔ 17. listopadu ↔ Zátopkova ↔ **Purmerendská** *(Poliklinika)* | 15–20 min | 30 min | Connects the southern depot corridor with the western health/residential zone. |
-| **`G`** | `207` | `765109` | **Horní Kosov** ↔ Žižkova ↔ Masarykovo nám. ↔ Kaufland ↔ Na Růžku ↔ **Zadní Bedřichov** *(↔ Bosch Pávov ↔ Antonínův Důl)* | 15–20 min | 30–60 min | Opened via the southern Bedřichov trolleybus corridor; partial battery extensions to Pávov industrial zone. |
-| **`H`** | `208` | `765110` | **(Bosch Pávov ↔) Zadní Bedřichov** ↔ Kaufland ↔ VŠP ↔ 17. listopadu ↔ Poliklinika ↔ Žižkova ↔ VŠP ↔ **Zadní Bedřichov** | 20–30 min | 30–60 min | Semi-circular line bypassing Masarykovo náměstí via VŠP and Poliklinika. |
-| **`T`** | `209` | `765111` | **Dopravní podnik** ↔ Tylova ↔ Brtnická ↔ *Technické / zátahové spoje* | Irregular | Irregular | Depot pull-in / pull-out and special technical runs. |
-
----
-
-### 2. Bus Lines (`typ: "autobus"`)
-Bus lines are designated by **numbers** and serve suburban districts, villages, shopping centres, and industrial shift changes. In the API, bus `lineid` values follow the **`1xx`** series (`100 + line_number`, e.g., Line `31` = `131`).
-
-| Line (`linka`) | API `lineid` | Primary Route & Terminals | Schedule Profile & Typical Frequency |
-| :---: | :---: | :--- | :--- |
-| **`2`** | `102` | **Velký Beranov** ↔ Malý Beranov ↔ Helenín ↔ Masarykovo nám. ↔ Královský vršek ↔ Smrčenská ↔ Krematorium ↔ **Zborná / Smrčná** | **Regular suburban/city line:** Every 30–60 min on workdays; 60–120 min on weekends (Smrčná served by selected runs Mon/Wed/Fri). |
-| **`4`** | `104` | **V Ráji** ↔ Masarykovo nám. ↔ Polenská / Hlavní nádraží ↔ Hruškové Dvory ↔ Moravské kovárny ↔ **Henčov / Heroltice** | **Industrial & suburban line:** Every 30–60 min during peaks; coordinated with industrial shift times. |
-| **`7`** | `107` | **Masarykovo náměstí** ↔ Pístov ↔ Vysoká ↔ **Popice** | **Suburban village line:** Fixed timetable departures (approx. 6–10 pairs of runs daily). |
-| **`8`** | `108` | **Masarykovo náměstí** ↔ Autobusové nádraží ↔ Škola Rošického ↔ Škola Jarní ↔ Motorpal ↔ **Hybrálec** | **Suburban line:** Every 30–60 min during peaks; hourly/bi-hourly off-peak. |
-| **`9`** | `109` | **Masarykovo náměstí** ↔ Žižkova ↔ **NC Aventin** *(Shopping Jihlava)* | **Free shopping centre line (*doprava zdarma*):** Runs daily every 30–60 min during shopping centre hours. |
-| **`10`** | `110` | **Masarykovo náměstí** ↔ **Kosov** | **Suburban line:** Selected scheduled departures throughout the day. |
-| **`12`** | `112` | **Velký Beranov** ↔ Helenín ↔ Masarykovo nám. ↔ Královský vršek ↔ Bedřichov ↔ Pávov ↔ Antonínův Důl ↔ **Štoky** | **Regional/suburban backbone:** Every 30–60 min on workdays; 60–120 min on weekends. |
-| **`31`** | `131` | **Dopravní podnik** ↔ Masarykovo nám. ↔ S. K. Neumanna ↔ **Bosch Diesel (Bosch Pávov)** | **Industrial shift line:** High-capacity runs timed around 06:00, 14:00, and 22:00 shift changes at Bosch. |
-| **`32`** | `132` | **Dopravní podnik** ↔ Březinova ↔ **Bosch Diesel (Bosch Pávov)** | **Industrial shift line:** Express shift connections via Březinky for Bosch employees. |
-| **`41`** | `141` | **Dopravní podnik** ↔ S. K. Neumanna ↔ **Swoboda-Stamping** ↔ Dopravní podnik | **Industrial shift line:** Timed specifically for shift changes at Swoboda-Stamping. |
-| **`42`** | `142` | **Dopravní podnik** ↔ Březinova ↔ **Swoboda-Stamping** ↔ Dopravní podnik | **Industrial shift line:** Timed specifically for shift changes via Březinky. |
-| **`Š1` / `Š2`**| — | **Škola Rošického ↔ Škola Jarní** (`Š1`) / **Masarykovo nám. ↔ Škola Jungmannova** (`Š2`) | **School lines (*školní spoje*):** Morning runs on school days only. |
-
----
-
 ## ✅ Ready-to-Use Query URLs
 
 ### 1. Get All Moving Vehicles (Clean JSON)
