@@ -1,6 +1,6 @@
 # 🚍 Jihlava MHD (DPMJ) — Unofficial Live Transit API Documentation
 
-> [!WARNING]
+> [!CAUTION]
 > **⚠️ RATE LIMIT & FAIR USE DISCLAIMER — DO NOT POLL FASTER THAN EVERY 15 SECONDS!**
 > This API is an undocumented production endpoint operated by **Statutární město Jihlava** and **DPMJ** for the public transit map. The official web client refreshes vehicle positions every **12 seconds** (`refreshInterval: 0.2` min). 
 > **Do not configure your scripts, bots, or Home Assistant integrations to query this API faster than once every 15 seconds.** Aggressive polling will overload the municipal GIS server and result in your IP address being rate-limited or permanently blocked by the city's firewall.
@@ -108,7 +108,7 @@ Bus lines are designated by **numbers** and serve suburban districts, villages, 
 
 ---
 
-## 🚀 Ready-to-Use Query URLs
+## ✅ Ready-to-Use Query URLs
 
 ### 1. Get All Moving Vehicles (Clean JSON)
 Since `latitude` and `longitude` are already included as attributes in Layer `47`, you can set `returnGeometry=false` to strip out the redundant Esri geometry wrapper:
