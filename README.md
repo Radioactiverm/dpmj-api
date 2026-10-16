@@ -279,3 +279,13 @@ rest:
 ## ⚖️ Disclaimer
 
 This documentation was created via clean-room inspection of public network requests for educational and interoperability purposes. All transit data is the property of **Statutární město Jihlava** (`gis@jihlava-city.cz`) and **Dopravní podnik města Jihlavy, a.s. (DPMJ)**. Because this is an undocumented internal endpoint, the schema or URLs may change without notice.
+
+---
+
+## 🗑️ Removal Request
+
+I accept removal requests of this repo on my email **support@radioactiverm.net** , i will accept removal emails only from the following domains:
+jihlava-city.cz,
+jihlava.cz,
+dpmj.cz
+
